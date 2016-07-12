@@ -23,8 +23,8 @@
 	$day = $send_date_array[1];
 	$year = $send_date_array[2];
 	$the_date = mktime($hour, $min, 0, $month, $day, $year);
-	
-	$q = 'UPDATE campaigns SET send_date = "'.$the_date.'", lists = "'.$email_lists.'", timezone = "'.$timezone.'" WHERE id = '.$campaign_id;
+	#todo: add column to table "campaigns" scheduled_recipients	int(100)
+	$q = 'UPDATE campaigns SET send_date = "'.$the_date.'", lists = "'.$email_lists.'", timezone = "'.$timezone.'", scheduled_recipients = "'.$total_recipients.'" WHERE id = '.$campaign_id;
 	$r = mysqli_query($mysqli, $q);
 	if ($r)
 	{

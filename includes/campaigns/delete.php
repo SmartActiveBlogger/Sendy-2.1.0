@@ -2,7 +2,38 @@
 <?php include('../login/auth.php');?>
 <?php 
 	$campaign_id = mysqli_real_escape_string($mysqli, $_POST['campaign_id']);
-	
+    //Modified - Check if campaign is scheduled but not sent, and if quota in use, update quota before deleting
+    $query = "SELECT app, sent, send_date, scheduled_recipients FROM campaigns WHERE id = '".$campaign_id."'";
+	$result = mysqli_query($mysqli,$query);
+    if($result && mysqli_num_rows($result) > 0){
+        while($row = mysqli_fetch_array($result)){
+            if($row['send']=='' && $row['send_data']!=''){
+                //campaign is scheduled but not sent
+                $scheduled_recipients = $row['scheduled_recipients'];
+                $app = $row['app'];
+                //Check if monthly quota needs to be updated
+                $q = 'SELECT allocated_quota, current_quota FROM apps WHERE id = '.$app;
+                $r = mysqli_query($mysqli, $q);
+                if($r)
+                {
+                    while($row = mysqli_fetch_array($r))
+                    {
+                        $allocated_quota = $row['allocated_quota'];
+                        $current_quota = $row['current_quota'];
+                        $updated_quota = $current_quota - $scheduled_recipients;
+                    }
+                }
+                //Update quota if a monthly limit was set
+                if($allocated_quota!=-1)
+                {
+                    //if so, update quota
+                    $q = 'UPDATE apps SET current_quota = '.$updated_quota.' WHERE id = '.$app;
+                    mysqli_query($mysqli, $q);
+                }
+            }
+        }
+    }
+
 	$q = 'DELETE FROM campaigns WHERE id = '.$campaign_id.' AND userID = '.get_app_info('main_userID');
 	$r = mysqli_query($mysqli, $q);
 	if ($r)
