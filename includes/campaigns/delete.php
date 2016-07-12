@@ -7,7 +7,7 @@
 	$result = mysqli_query($mysqli,$query);
     if($result && mysqli_num_rows($result) > 0){
         while($row = mysqli_fetch_array($result)){
-            if($row['send']=='' && $row['send_data']!=''){
+            if($row['sent']=='' && $row['send_data']!=''){
                 //campaign is scheduled but not sent
                 $scheduled_recipients = $row['scheduled_recipients'];
                 $app = $row['app'];
