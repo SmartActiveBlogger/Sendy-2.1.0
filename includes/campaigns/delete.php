@@ -5,7 +5,7 @@
     //Modified - Check if campaign is scheduled but not sent, and if quota in use, update quota before deleting
     $query = "SELECT app, sent, send_date, scheduled_recipients FROM campaigns WHERE id = '".$campaign_id."'";
 	$result = mysqli_query($mysqli,$query);
-    if($result && mysqli_num_rows($result) > 0){
+    if($result){
         while($row = mysqli_fetch_array($result)){
             if($row['sent']=='' && $row['send_data']!=''){
                 //campaign is scheduled but not sent
