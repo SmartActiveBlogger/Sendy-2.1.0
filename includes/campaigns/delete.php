@@ -1,5 +1,6 @@
 <?php include('../functions.php');?>
 <?php include('../login/auth.php');?>
+<?php include('../../debug/debug.php');?>
 <?php 
 	$campaign_id = mysqli_real_escape_string($mysqli, $_POST['campaign_id']);
     //Modified - Check if campaign is scheduled but not sent, and if quota in use, update quota before deleting
@@ -7,6 +8,7 @@
 	$result = mysqli_query($mysqli,$query);
     if($result){
         while($row = mysqli_fetch_array($result)){
+            debug_to_console($row);
             if($row['sent']=='' && $row['send_data']!=''){
                 //campaign is scheduled but not sent
                 $scheduled_recipients = $row['scheduled_recipients'];
